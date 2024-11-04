@@ -18,9 +18,15 @@ app.use(cors(
 ));
 
 const originalUrl = "http://3.217.85.102/api/v1"
-// getToken();
 
-// get token and save endpoint
+function checkTokenMiddleware(req, res, next) {
+  if (auth_token) {
+    next();
+  } else {
+    res.status(401).send("No hay token");
+  }
+}
+
 app.get('/api-proxy/token/', async (req, res) => {
   const url = `${originalUrl}/token/`;
   console.log(url);
@@ -48,7 +54,7 @@ app.get('/api-proxy/token/', async (req, res) => {
 });
 
 // Configurar el proxy endpoint
-app.get('/api-proxy/publicaciones/', async (req, res) => {
+app.get('/api-proxy/publicaciones/',checkTokenMiddleware, async (req, res) => {
   // const awsApiUrl = `http://<tu-api-aws-url>${req.originalUrl.replace('/api-proxy', '')}`;
   console.log(req.originalUrl);
   const awsApiUrl = `${originalUrl}${req.originalUrl.replace('/api-proxy', '')}`;
@@ -80,7 +86,7 @@ app.get('/api-proxy/publicaciones/', async (req, res) => {
   }
 });
 // categroies etc
-app.get('/api-proxy/*', async (req, res) => {
+app.get('/api-proxy/*',checkTokenMiddleware, async (req, res) => {
   // const awsApiUrl = `http://<tu-api-aws-url>${req.originalUrl.replace('/api-proxy', '')}`;
   console.log(req.originalUrl);
   const awsApiUrl = `${originalUrl}${req.originalUrl.replace('/api-proxy', '')}`;
