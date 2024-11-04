@@ -4,30 +4,7 @@ const cors = require('cors'); // Importa el paquete cors
 const { createProxyMiddleware } = require('http-proxy-middleware');
 const app = express();
 const PORT = process.env.PORT || 8080;
-let auth_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMwNjc3NDU2LCJpYXQiOjE3MzA1OTEwNTYsImp0aSI6IjkxYzRjN2UwNGE4ZjQ5NGVhYzkyZTAzMzMyYmJlY2JiIiwicnV0IjoiMjAxMjM5MzAtNSJ9.BwPEOrK4ronwERUKM5PpJ4qHeUQld2bRMTTRsTIR-74"
-
-function getToken() {
-  const url =  `${originalUrl}/token/`;
-  console.log(url);
-  axios.post( url, {
-    "rut": "20123930-5",
-    "password": "@d3Vpr0Tot1no"
-  })
-    .then(function (response) {
-      // console.log(response.data.access);
-      console.log("token saved");
-      auth_token = response.data.access;
-    }
-    )
-    .catch(function (error) {
-      console.log(error);
-    }
-    );
-}
-// every 10 seconds for testing
-// for 
-// setInterval(getToken, 1000 * 10); // Cada 10 segundos
-setInterval(getToken, 1000 * 60 * 60 * 24); // Cada 24 horas
+let auth_token = ""
 
 
 
@@ -87,8 +64,17 @@ app.get('/api-proxy/publicaciones/', async (req, res) => {
         }
       }
 
+    )
+    .then(function (response) {
+      res.json(response.data);
+    }
+    )
+    .catch(function (error) {
+      console.log(error);
+      res.status(500).send("Error en el proxyy");
+    }
     );
-    res.json(response.data);
+
   } catch (error) {
     res.status(500).send("Error en el proxy");
   }
@@ -148,6 +134,6 @@ app.get('/api-proxy/export-to-excel/', async (req, res) => {
 
 
 
-app.listen(PORT, HOST = "192.168.0.11", () => {
+app.listen(PORT, () => {
   console.log(`Proxy server en el puerto ${PORT}`);
 });
