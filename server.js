@@ -4,6 +4,8 @@ const cors = require('cors'); // Importa el paquete cors
 const { createProxyMiddleware } = require('http-proxy-middleware');
 const app = express();
 const PORT = process.env.PORT || 8080;
+
+
 let auth_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMxNDQxMTUzLCJpYXQiOjE3MzEzNTQ3NTMsImp0aSI6IjBhYzNmZjdlZDI0ODQzMTk5OTA0YTcwZDhkMzY1MjM4IiwicnV0IjoiMjAxMjM5MzAtNSJ9.99_UrymbWEsEaIQSwqLV1JdidFMHBE2y4pCZww_awFM"
 
 
