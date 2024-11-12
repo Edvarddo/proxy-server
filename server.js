@@ -140,6 +140,21 @@ app.get('/api-proxy/export-to-excel/', async (req, res) => {
 
 });
 
+app.patch('/api-proxy/publicaciones/:id/', async (req, res) => {
+  const awsApiUrl = `${originalUrl}/publicaciones/${req.params.id}/`; // URL completa de la API de AWS
+  try {
+    const response = await axios.patch(awsApiUrl, req.body,
+      {
+        headers: {
+          'Authorization': `Bearer ${auth_token}`
+        }
+      }
+    );
+    res.json(response.data);
+  } catch (error) {
+    res.status(500).send("Error en el proxy");
+  }
+});
 
 
 app.listen(PORT, () => {
