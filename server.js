@@ -6,7 +6,7 @@ const app = express();
 const PORT = process.env.PORT || 8080;
 
 
-let auth_token = "eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMyMDczMTkyLCJpYXQiOjE3MzE5ODY3OTIsImp0aSI6IjljMzNjY2Y1OTE1OTRjN2Q5ODhhMTkxZTAzODhlYWNjIiwicnV0IjoiMjAxMjM5MzAtNSJ9.K2lPCnuW818BY0MKbdffT_7TWEgOt22853k3BgC8kaA"
+let auth_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMyMDczMTkyLCJpYXQiOjE3MzE5ODY3OTIsImp0aSI6IjljMzNjY2Y1OTE1OTRjN2Q5ODhhMTkxZTAzODhlYWNjIiwicnV0IjoiMjAxMjM5MzAtNSJ9.K2lPCnuW818BY0MKbdffT_7TWEgOt22853k3BgC8kaA"
 
 
 
