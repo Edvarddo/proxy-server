@@ -6,7 +6,7 @@ const app = express();
 const PORT = process.env.PORT || 8080;
 
 
-let auth_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMxNDQxMTUzLCJpYXQiOjE3MzEzNTQ3NTMsImp0aSI6IjBhYzNmZjdlZDI0ODQzMTk5OTA0YTcwZDhkMzY1MjM4IiwicnV0IjoiMjAxMjM5MzAtNSJ9.99_UrymbWEsEaIQSwqLV1JdidFMHBE2y4pCZww_awFM"
+let auth_token = "eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMyMDczMTkyLCJpYXQiOjE3MzE5ODY3OTIsImp0aSI6IjljMzNjY2Y1OTE1OTRjN2Q5ODhhMTkxZTAzODhlYWNjIiwicnV0IjoiMjAxMjM5MzAtNSJ9.K2lPCnuW818BY0MKbdffT_7TWEgOt22853k3BgC8kaA"
 
 
 
@@ -38,9 +38,9 @@ app.get('/api-proxy/token/', async (req, res) => {
       "password": "@d3Vpr0Tot1no"
     }).
       then(function (response) {
-        console.log("prev_tok: ",auth_token);
+        console.log("prev_tok: ", auth_token);
         auth_token = response.data.access ? response.data.access : auth_token;
-        console.log("actual_tok: ",response.data.access);
+        console.log("actual_tok: ", response.data.access);
         res.json(response.data);
       }
       )
@@ -48,15 +48,15 @@ app.get('/api-proxy/token/', async (req, res) => {
         console.log(error);
       }
       );
-    
-     
+
+
   } catch (error) {
     res.status(500).send("Error en el proxy");
   }
 });
 
 // Configurar el proxy endpoint
-app.get('/api-proxy/publicaciones/',checkTokenMiddleware, async (req, res) => {
+app.get('/api-proxy/publicaciones/', checkTokenMiddleware, async (req, res) => {
   // const awsApiUrl = `http://<tu-api-aws-url>${req.originalUrl.replace('/api-proxy', '')}`;
   console.log(req.originalUrl);
   const awsApiUrl = `${originalUrl}${req.originalUrl.replace('/api-proxy', '')}`;
@@ -73,22 +73,22 @@ app.get('/api-proxy/publicaciones/',checkTokenMiddleware, async (req, res) => {
       }
 
     )
-    .then(function (response) {
-      res.json(response.data);
-    }
-    )
-    .catch(function (error) {
-      console.log(error);
-      res.status(500).send("Error en el proxyy");
-    }
-    );
+      .then(function (response) {
+        res.json(response.data);
+      }
+      )
+      .catch(function (error) {
+        console.log(error);
+        res.status(500).send("Error en el proxyy");
+      }
+      );
 
   } catch (error) {
     res.status(500).send("Error en el proxy");
   }
 });
 // categroies etc
-app.get('/api-proxy/*',checkTokenMiddleware, async (req, res) => {
+app.get('/api-proxy/*', checkTokenMiddleware, async (req, res) => {
   // const awsApiUrl = `http://<tu-api-aws-url>${req.originalUrl.replace('/api-proxy', '')}`;
   console.log(req.originalUrl);
   const awsApiUrl = `${originalUrl}${req.originalUrl.replace('/api-proxy', '')}`;
@@ -115,7 +115,7 @@ app.get('/api-proxy/*',checkTokenMiddleware, async (req, res) => {
 // this url will return the excel file http://3.217.85.102/api/v1/export-to-excel/
 app.get('/api-proxy/export-to-excel/', async (req, res) => {
   const awsApiUrl = `${originalUrl}/export-to-excel/`; // URL completa de la API de AWS
-  
+
   try {
     // Realizar la solicitud a la API de AWS para obtener el archivo Excel
     const response = await axios.get(awsApiUrl, {
@@ -124,7 +124,7 @@ app.get('/api-proxy/export-to-excel/', async (req, res) => {
       },
       responseType: 'arraybuffer' // Cambiar a arraybuffer para manejar binarios correctamente
     });
-    
+
     // Configurar los encabezados para forzar la descarga en el navegador
     res.setHeader('Content-Disposition', 'attachment; filename="publicaciones.xlsx"');
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
@@ -132,7 +132,7 @@ app.get('/api-proxy/export-to-excel/', async (req, res) => {
 
     // Enviar el contenido del archivo al cliente
     res.send(response.data);
-    
+
   } catch (error) {
     console.error("Error en la descarga del archivo:", error.message);
     res.status(500).send("Error en la descarga del archivo");
@@ -156,6 +156,32 @@ app.patch('/api-proxy/publicaciones/:id/', async (req, res) => {
   }
 });
 
+
+app.post('/api-proxy/token/', async (req, res) => {
+  const url = `${originalUrl}/token/`;
+  console.log(url);
+  console.log(req.body)
+  axios.post(url, {
+    "rut": req.body.rut,
+    "password": req.body.password
+  }).
+    then(function (response) {
+      console.log(response.data);
+      res.json(response.data);
+    }
+    )
+    .catch(function (error) {
+      console.log(error);
+      res.status(error.status).send(error.message);
+    }
+    );
+
+    
+
+
+
+
+});
 
 app.listen(PORT, () => {
   console.log(`Proxy server en el puerto ${PORT}`);
