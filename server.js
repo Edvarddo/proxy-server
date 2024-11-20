@@ -29,6 +29,14 @@ function checkTokenMiddleware(req, res, next) {
   }
 }
 
+// global middleware to save the token
+app.use((req, res, next) => {
+  console.log("Middleware global");
+
+  req.token = req.headers.authorization;
+  next();
+});
+
 app.get('/api-proxy/token/', async (req, res) => {
   const url = `${originalUrl}/token/`;
   console.log(url);
@@ -58,6 +66,9 @@ app.get('/api-proxy/token/', async (req, res) => {
 // Configurar el proxy endpoint
 app.get('/api-proxy/publicaciones/', checkTokenMiddleware, async (req, res) => {
   // const awsApiUrl = `http://<tu-api-aws-url>${req.originalUrl.replace('/api-proxy', '')}`;
+  // from headers get the token
+
+
   console.log(req.originalUrl);
   const awsApiUrl = `${originalUrl}${req.originalUrl.replace('/api-proxy', '')}`;
   console.log(req.originalUrl);
@@ -68,7 +79,7 @@ app.get('/api-proxy/publicaciones/', checkTokenMiddleware, async (req, res) => {
     const response = await axios.get(awsApiUrl,
       {
         headers: {
-          'Authorization': `Bearer ${auth_token}`
+          'Authorization': `${req.token ? req.token : "Bearer "+auth_token}`
         }
       }
 
@@ -90,7 +101,7 @@ app.get('/api-proxy/publicaciones/', checkTokenMiddleware, async (req, res) => {
 // categroies etc
 app.get('/api-proxy/*', checkTokenMiddleware, async (req, res) => {
   // const awsApiUrl = `http://<tu-api-aws-url>${req.originalUrl.replace('/api-proxy', '')}`;
-  console.log(req.originalUrl);
+  console.log("pba",req.token);
   const awsApiUrl = `${originalUrl}${req.originalUrl.replace('/api-proxy', '')}`;
   console.log(req.originalUrl);
   console.log(awsApiUrl);
@@ -100,7 +111,7 @@ app.get('/api-proxy/*', checkTokenMiddleware, async (req, res) => {
     const response = await axios.get(awsApiUrl,
       {
         headers: {
-          'Authorization': `Bearer ${auth_token}`
+          'Authorization': `${req.token ? req.token : "Bearer "+auth_token}`
         }
       }
 
@@ -146,7 +157,7 @@ app.patch('/api-proxy/publicaciones/:id/', async (req, res) => {
     const response = await axios.patch(awsApiUrl, req.body,
       {
         headers: {
-          'Authorization': `Bearer ${auth_token}`
+          'Authorization': `${req.token ? req.token : "Bearer "+auth_token}`
         }
       }
     );
